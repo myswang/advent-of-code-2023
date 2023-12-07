@@ -75,8 +75,5 @@ with open("input.txt", "r") as input_file:
 hands.sort(key=cmp_to_key(compare_hands))
 
 # compute the winnings
-winnings = 0
-for i in range(len(hands)):
-    winnings += (i+1) * hands[i][1]
-
+winnings = sum(idx * hand[1] for idx, hand in enumerate(hands, 1))
 print(winnings)
