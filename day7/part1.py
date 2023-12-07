@@ -10,11 +10,18 @@ RANKS = {
     "2": 0,
 }
 
+'''
+Gets the type of the hand.
+Returns an integer from 0-6 (weakest-strongest)
+'''
 def get_hand_type(hand):
+    # count the number of cards of each type present
     card_nums = {}
     for card in hand:
         card_nums.setdefault(card, 0)
         card_nums[card] += 1
+
+    # match hand to hand type
     card_nums = tuple(sorted(list(card_nums.values())))
     match card_nums:
         case (5,):
@@ -32,27 +39,37 @@ def get_hand_type(hand):
         case _:
             return 0 # high card
 
+'''
+Compares two different hands.
+hand1 and hand2 are tuples consisting of:
+ - hand as string (i.e. 84J22)
+ - bet
+ - hand type, computed by the get_hand_type function
+'''
 def compare_hands(hand1, hand2):
+    # compare hand type ranks
     if hand1[2] < hand2[2]:
         return -1
-    elif hand1[2] > hand2[2]:
+    if hand1[2] > hand2[2]:
         return 1
-    else:
-        for h1, h2 in zip(hand1[0], hand2[0]):
-            if RANKS[h1] < RANKS[h2]:
-                return -1
-            elif RANKS[h1] > RANKS[h2]:
-                return 1
-        return 0
+    for h1, h2 in zip(hand1[0], hand2[0]):
+        if RANKS[h1] < RANKS[h2]:
+            return -1
+        if RANKS[h1] > RANKS[h2]:
+            return 1
+    return 0
 
+# parse puzzle input
 with open("input.txt", "r") as input_file:
     hands = []
     for line in input_file.read().splitlines():
         hand, bid = line.split()
         hands.append((hand, int(bid), get_hand_type(hand)))
 
+# sort the hands, using custom compare_hands comparator
 hands = sorted(hands, key=cmp_to_key(compare_hands))
 
+# compute the winnings
 winnings = 0
 for i in range(len(hands)):
     winnings += (i+1) * hands[i][1]
