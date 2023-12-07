@@ -32,18 +32,17 @@ def get_hand_type(hand):
         card_rank = CARD_RANKS[card]
         card_nums.setdefault(card_rank, 0)
         card_nums[card_rank] += 1
+    card_nums = dict(sorted(card_nums.items(), key=itemgetter(1, 0)))
     
     # handle wildcards (J)
-    if 0 in card_nums:
+    if 0 in card_nums and card_nums[0] != 5:
         num_jacks = card_nums[0]
-        if num_jacks != 5: # stupid edge case: JJJJJ
-            del card_nums[0]
-            # sort by card type with largest qty, followed by rank
-            card_to_mod = [c[0] for c in sorted(card_nums.items(), key=itemgetter(1, 0))][-1]
-            card_nums[card_to_mod] += num_jacks
+        del card_nums[0]
+        card_to_mod = list(card_nums.keys())[-1]
+        card_nums[card_to_mod] += num_jacks
     
     # match hand to hand type
-    card_nums = tuple(sorted(list(card_nums.values())))
+    card_nums = tuple(card_nums.values())
     return HAND_TYPES[card_nums]
 
 '''
