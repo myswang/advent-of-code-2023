@@ -78,7 +78,7 @@ with open("input.txt", "r") as input_file:
         hands.append((hand, int(bid), get_hand_type(hand)))
 
 # sort the hands, using custom compare_hands comparator
-hands = sorted(hands, key=cmp_to_key(compare_hands))
+hands.sort(key=cmp_to_key(compare_hands))
 
 # compute the winnings
 winnings = 0
