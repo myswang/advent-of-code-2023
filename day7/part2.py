@@ -33,11 +33,10 @@ def get_hand_type(hand):
         card_nums.setdefault(card_rank, 0)
         card_nums[card_rank] += 1
     card_nums = dict(sorted(card_nums.items(), key=itemgetter(1, 0)))
-    
+
     # handle wildcards (J)
     if 0 in card_nums and card_nums[0] != 5:
-        num_jacks = card_nums[0]
-        del card_nums[0]
+        num_jacks = card_nums.pop(0)
         card_to_mod = list(card_nums.keys())[-1]
         card_nums[card_to_mod] += num_jacks
     
