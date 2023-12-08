@@ -10,21 +10,19 @@ with open(input_filename, "r") as input_file:
 
 instructions = [int(step) for step in lines[0].replace("R", " 1").replace("L", " 0").split()]
 
-nodes = {}
+node_map = {}
 for line in lines[2:]:
     matches = re.findall(r"\w\w\w", line)
-    nodes[matches[0]] = tuple(matches[1:])
+    node_map[matches[0]] = tuple(matches[1:])
 
-starting_nodes = [node for node in nodes.keys() if node[-1] == "A"]
+starting_nodes = (node for node in node_map.keys() if node[-1] == "A")
 result_steps = []
 for node in starting_nodes:
     num_steps = 0
     instruct_queue = deque(instructions)
-    while(True):
-        if node[-1] == "Z":
-            break
+    while node[-1] != "Z":
         instruction = instruct_queue.popleft()
-        node = nodes[node][instruction]
+        node = node_map[node][instruction]
         num_steps += 1
         instruct_queue.append(instruction)
     result_steps.append(num_steps)

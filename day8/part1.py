@@ -9,18 +9,16 @@ with open(input_filename, "r") as input_file:
 
 instructions = deque(int(step) for step in lines[0].replace("R", " 1").replace("L", " 0").split())
 
-nodes = {}
+node_map = {}
 for line in lines[2:]:
     matches = re.findall(r"\w\w\w", line)
-    nodes[matches[0]] = tuple(matches[1:])
+    node_map[matches[0]] = tuple(matches[1:])
 
 cur_node = "AAA"
 num_steps = 0
-while(True):
-    if cur_node == "ZZZ":
-        break
+while cur_node != "ZZZ":
     instruction = instructions.popleft()
-    cur_node = nodes[cur_node][instruction]
+    cur_node = node_map[cur_node][instruction]
     num_steps += 1
     instructions.append(instruction)
 
