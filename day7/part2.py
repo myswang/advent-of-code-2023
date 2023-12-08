@@ -1,78 +1,52 @@
-from functools import cmp_to_key
 from operator import itemgetter
 
-CARD_RANKS = {
-    "A": 12, "K": 11,
-    "Q": 10, "T": 9,
-    "9": 8,  "8": 7,
-    "7": 6,  "6": 5,
-    "5": 4,  "4": 3,
-    "3": 2,  "2": 1,
-    "J": 0,
-}
-
-HAND_TYPES = {
-    (5,): 6,
-    (1, 4): 5,
-    (2, 3): 4,
-    (1, 1, 3): 3,
-    (1, 2, 2): 2,
-    (1, 1, 1, 2): 1,
-    (1, 1, 1, 1, 1): 0
-}
+'''
+Replace face cards with hex.
+Returns a valid hex string.
+'''
+def process_hand(hand: str):
+    cards = "AKQJT"
+    replacements = "DCB1A"
+    for card, replacement in zip(cards, replacements):
+        hand = hand.replace(card, replacement)
+    return hand
 
 '''
 Gets the type of the hand.
 Returns an integer from 0-6 (weakest-strongest)
 '''
 def get_hand_type(hand):
+    hand_types = {
+        (5,): 6, (1, 4): 5, (2, 3): 4, (1, 3): 3,
+        (2, 2): 2, (1, 2): 1, (1, 1): 0
+    }
     # count the number of cards of each type present
     card_nums = {}
     for card in hand:
-        card_rank = CARD_RANKS[card]
-        card_nums.setdefault(card_rank, 0)
-        card_nums[card_rank] += 1
+        card_nums.setdefault(card, 0)
+        card_nums[card] += 1
     card_nums = dict(sorted(card_nums.items(), key=itemgetter(1, 0)))
 
     # handle wildcards (J)
-    if 0 in card_nums and card_nums[0] != 5:
-        num_jacks = card_nums.pop(0)
-        card_to_mod = list(card_nums.keys())[-1]
+    if "1" in card_nums and card_nums["1"] != 5:
+        num_jacks = card_nums.pop("1")
+        card_to_mod = tuple(card_nums.keys())[-1]
         card_nums[card_to_mod] += num_jacks
     
     # match hand to hand type
-    card_nums = tuple(card_nums.values())
-    return HAND_TYPES[card_nums]
-
-'''
-Compares two different hands.
-hand1 and hand2 are tuples consisting of:
- - hand as string (i.e. 84J22)
- - bet
- - hand type, computed by the get_hand_type function
-'''
-def compare_hands(hand1, hand2):
-    # compare hand type ranks
-    if hand1[2] < hand2[2]:
-        return -1
-    if hand1[2] > hand2[2]:
-        return 1
-    for h1, h2 in zip(hand1[0], hand2[0]):
-        if CARD_RANKS[h1] < CARD_RANKS[h2]:
-            return -1
-        if CARD_RANKS[h1] > CARD_RANKS[h2]:
-            return 1
-    return 0
+    card_nums = tuple(card_nums.values())[-2:]
+    return hand_types[card_nums]
 
 # parse puzzle input
+hands = []
 with open("input.txt", "r") as input_file:
-    hands = []
     for line in input_file.read().splitlines():
         hand, bid = line.split()
+        hand = process_hand(hand)
         hands.append((hand, int(bid), get_hand_type(hand)))
 
 # sort the hands, using custom compare_hands comparator
-hands.sort(key=cmp_to_key(compare_hands))
+hands.sort(key=itemgetter(2, 0))
 
 # compute the winnings
 winnings = sum(idx * hand[1] for idx, hand in enumerate(hands, 1))
