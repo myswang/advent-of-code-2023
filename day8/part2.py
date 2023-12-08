@@ -1,3 +1,4 @@
+from math import lcm
 import os
 import re
 
@@ -13,17 +14,22 @@ for line in lines[2:]:
     matches = re.findall(r"\w\w\w", line)
     nodes[matches[0]] = tuple(matches[1:])
 
-cur_node = "AAA"
-num_steps = 0
+starting_nodes = [node for node in nodes.keys() if node[-1] == "A"]
+result_steps = []
 done = False
-while(True):
-    for instruction in instructions:
-        if cur_node == "ZZZ":
-            done = True
-            break
-        cur_node = nodes[cur_node][instruction]
-        num_steps += 1
-    if(done):
-        break
 
-print(num_steps)
+for node in starting_nodes:
+    num_steps = 0
+    while(True):
+        for instruction in instructions:
+            if node[-1] == "Z":
+                done = True
+                break
+            node = nodes[node][instruction]
+            num_steps += 1
+        if(done):
+            break
+    done = False
+    result_steps.append(num_steps)
+
+print(lcm(*result_steps))
