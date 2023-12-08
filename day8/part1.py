@@ -1,6 +1,9 @@
+import os
 import re
 
-with open("input.txt", "r") as input_file:
+input_dirname = os.path.dirname(__file__)
+input_filename = os.path.join(input_dirname, "inputs/input.txt")
+with open(input_filename, "r") as input_file:
     lines = input_file.read().splitlines()
 
 instructions = [int(step) for step in lines[0].replace("R", " 1").replace("L", " 0").split()]
