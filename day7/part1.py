@@ -17,8 +17,8 @@ Returns an integer from 0-6 (weakest-strongest)
 '''
 def get_hand_type(hand):
     hand_types = {
-        (5,): 6, (1, 4): 5, (2, 3): 4, (1, 3): 3,
-        (2, 2): 2, (1, 2): 1, (1, 1): 0
+        (1, 1): 0, (1, 2): 1, (2, 2): 2, (1, 3): 3,
+        (2, 3): 4, (1, 4): 5, (5,): 6
     }
     # count the number of cards of each type present
     card_nums = {}
