@@ -1,3 +1,4 @@
+from collections import deque
 import os
 import re
 
@@ -6,7 +7,7 @@ input_filename = os.path.join(input_dirname, "inputs/input.txt")
 with open(input_filename, "r") as input_file:
     lines = input_file.read().splitlines()
 
-instructions = [int(step) for step in lines[0].replace("R", " 1").replace("L", " 0").split()]
+instructions = deque(int(step) for step in lines[0].replace("R", " 1").replace("L", " 0").split())
 
 nodes = {}
 for line in lines[2:]:
@@ -15,15 +16,12 @@ for line in lines[2:]:
 
 cur_node = "AAA"
 num_steps = 0
-done = False
 while(True):
-    for instruction in instructions:
-        if cur_node == "ZZZ":
-            done = True
-            break
-        cur_node = nodes[cur_node][instruction]
-        num_steps += 1
-    if(done):
+    if cur_node == "ZZZ":
         break
+    instruction = instructions.popleft()
+    cur_node = nodes[cur_node][instruction]
+    num_steps += 1
+    instructions.append(instruction)
 
 print(num_steps)

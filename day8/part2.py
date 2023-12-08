@@ -1,3 +1,4 @@
+from collections import deque
 from math import lcm
 import os
 import re
@@ -16,20 +17,16 @@ for line in lines[2:]:
 
 starting_nodes = [node for node in nodes.keys() if node[-1] == "A"]
 result_steps = []
-done = False
-
 for node in starting_nodes:
     num_steps = 0
+    instruct_queue = deque(instructions)
     while(True):
-        for instruction in instructions:
-            if node[-1] == "Z":
-                done = True
-                break
-            node = nodes[node][instruction]
-            num_steps += 1
-        if(done):
+        if node[-1] == "Z":
             break
-    done = False
+        instruction = instruct_queue.popleft()
+        node = nodes[node][instruction]
+        num_steps += 1
+        instruct_queue.append(instruction)
     result_steps.append(num_steps)
 
 print(lcm(*result_steps))
