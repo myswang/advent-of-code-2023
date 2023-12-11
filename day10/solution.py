@@ -64,19 +64,19 @@ while x != x0 or y != y0 or distance == 0:
 # edge case 2: ...(out loop)...F---7...(out loop)... (or L---J)
 area = 0
 for row in pipes_clean:
-    open = -1
+    open = False
     prev = ""
     for pipe in row:
         if pipe == "|":
-            open *= -1
-        elif pipe == "." and open == 1:
+            open = not open
+        elif pipe == "." and open:
             area += 1
         elif pipe in "FL":
-            open *= -1
+            open = not open
             prev = pipe
         elif pipe in "J7":
             if prev + pipe in "LJF7":
-                open *= -1
+                open = not open
             prev = ""
         else:
             continue
