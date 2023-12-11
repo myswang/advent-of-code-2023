@@ -72,10 +72,9 @@ for row in pipes_clean:
         elif pipe == "." and open:
             area += 1
         elif pipe in "FL":
-            open = not open
             prev = pipe
         elif pipe in "J7":
-            if prev + pipe in "LJF7":
+            if prev + pipe in "L7FJ":
                 open = not open
             prev = ""
         else:
